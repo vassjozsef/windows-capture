@@ -24,7 +24,7 @@ std::wstring GetWindowText(HWND hwnd)
     return title;
 }
 
-bool isCapturable(Window const& window)
+bool isAltTabWindow(Window const& window)
 {
     HWND hwnd = window.hwnd();
     HWND shellWindow = GetShellWindow();
@@ -76,7 +76,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 
     auto window = Window(hwnd, title, class_name);
 
-    if (!isCapturable(window)) {
+    if (!isAltTabWindow(window)) {
         return TRUE;
     }
 
