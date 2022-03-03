@@ -1,0 +1,7 @@
+.vs
+Debug
+Release
+x64
+windows-capture/Debug
+windows-capture/Release
+windows-capture/x64
