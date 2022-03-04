@@ -165,6 +165,7 @@
     <ClCompile Include="window_enumeration.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="capture_interop.h" />
     <ClInclude Include="d3d_helpers.h" />
     <ClInclude Include="direct3d11_interop.h" />
     <ClInclude Include="simple_capture.h" />

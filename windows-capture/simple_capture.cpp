@@ -18,15 +18,7 @@ SimpleCapture::SimpleCapture(
     d3dDevice->GetImmediateContext(d3dContext_.put());
 
     auto size = item_.Size();
-
-/*
-    m_swapChain = CreateDXGISwapChain(
-        d3dDevice,
-        static_cast<uint32_t>(size.Width),
-        static_cast<uint32_t>(size.Height),
-        static_cast<DXGI_FORMAT>(DirectXPixelFormat::B8G8R8A8UIntNormalized),
-        2);
-*/
+    printf("Frame size: %d x %d\n", size.Width, size.Height);
 
     // Create framepool, define pixel format (DXGI_FORMAT_B8G8R8A8_UNORM), and frame size. 
     framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
@@ -39,23 +31,12 @@ SimpleCapture::SimpleCapture(
    frameArrived_ = framePool_.FrameArrived(winrt::auto_revoke, { this, &SimpleCapture::OnFrameArrived });
 }
 
-// Start sending capture frames
 void SimpleCapture::StartCapture()
 {
     CheckClosed();
     session_.StartCapture();
 }
 
-/*
-ICompositionSurface SimpleCapture::CreateSurface(
-    Compositor const& compositor)
-{
-    CheckClosed();
-    return CreateCompositionSurfaceForSwapChain(compositor, m_swapChain.get());
-}
-*/
-
-// Process captured frames
 void SimpleCapture::Close()
 {
     auto expected = false;
@@ -65,7 +46,6 @@ void SimpleCapture::Close()
         framePool_.Close();
         session_.Close();
 
-  //      m_swapChain = nullptr;
         framePool_ = nullptr;
         session_ = nullptr;
         item_ = nullptr;
@@ -76,6 +56,7 @@ void SimpleCapture::OnFrameArrived(
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool const& sender,
     winrt::Windows::Foundation::IInspectable const&)
 {
+    printf("Frame received\n");
     auto newSize = false;
 
     {
@@ -90,34 +71,12 @@ void SimpleCapture::OnFrameArrived(
             // After we do that, retire the frame and then recreate our frame pool.
             newSize = true;
             lastSize_ = frameContentSize;
-/*
-            m_swapChain->ResizeBuffers(
-                2,
-                static_cast<uint32_t>(m_lastSize.Width),
-                static_cast<uint32_t>(m_lastSize.Height),
-                static_cast<DXGI_FORMAT>(DirectXPixelFormat::B8G8R8A8UIntNormalized),
-                0);
-*/
         }
-
-        /*
-        {
-           
-            auto frameSurface = GetDXGIInterfaceFromObject<ID3D11Texture2D>(frame.Surface());
-
-            winrt::com_ptr<ID3D11Texture2D> backBuffer;
-            winrt::check_hresult(m_swapChain->GetBuffer(0, guid_of<ID3D11Texture2D>(), backBuffer.put_void()));
-
-            d3dContext_->CopyResource(backBuffer.get(), frameSurface.get());
-        }
-        */
     }
-
-  //  DXGI_PRESENT_PARAMETERS presentParameters = { 0 };
-  //  m_swapChain->Present1(1, 0, &presentParameters);
 
     if (newSize)
     {
+        printf("Frame size: %d x %d\n", lastSize_.Width, lastSize_.Height);
         framePool_.Recreate(
             device_,
             winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,

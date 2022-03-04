@@ -37,5 +37,8 @@
     <ClInclude Include="d3d_helpers.h">
       <Filter>Files</Filter>
     </ClInclude>
+    <ClInclude Include="capture_interop.h">
+      <Filter>Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

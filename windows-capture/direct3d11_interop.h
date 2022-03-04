@@ -1,7 +1,8 @@
 #pragma once
 
-#include <winrt/windows.graphics.directx.direct3d11.h>
 #include <inspectable.h>
+
+#include <winrt/windows.graphics.directx.direct3d11.h>
 
 extern "C"
 {
