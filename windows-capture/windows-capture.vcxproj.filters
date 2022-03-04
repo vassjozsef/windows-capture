@@ -20,6 +20,9 @@
     <ClCompile Include="simple_capture.cpp">
       <Filter>Files</Filter>
     </ClCompile>
+    <ClCompile Include="d3d_helpers.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window_enumeration.h">
@@ -29,6 +32,9 @@
       <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="direct3d11_interop.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="d3d_helpers.h">
       <Filter>Files</Filter>
     </ClInclude>
   </ItemGroup>
