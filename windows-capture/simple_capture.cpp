@@ -1,6 +1,6 @@
 #include "simple_capture.h"
 
-#include <iostream>
+#include <sstream>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Graphics.DirectX.h>
@@ -20,7 +20,9 @@ SimpleCapture::SimpleCapture(
     d3dDevice->GetImmediateContext(d3dContext_.put());
 
     auto size = item_.Size();
-    std::cout << "Capture created with frame size: " << size.Width << " x " << size.Height << std::endl;
+    std::wstringstream str;
+    str << "Capture created with frame size: " << size.Width << " x " << size.Height << std::endl;
+    OutputDebugString(str.str().c_str());
 
     // Create framepool, define pixel format (DXGI_FORMAT_B8G8R8A8_UNORM), and frame size. 
     framePool_ = winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::Create(
@@ -40,7 +42,7 @@ void SimpleCapture::StartCapture()
         session_.StartCapture();
     }
     catch (...) {
-        std::cout << "Failed to start capture" << std::endl;
+        OutputDebugString(L"Failed to start capture\n");
     }
 }
 
@@ -63,7 +65,12 @@ void SimpleCapture::OnFrameArrived(
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool const& sender,
     winrt::Windows::Foundation::IInspectable const&)
 {
-    std::cout << "Frame received" << std::endl;
+    count_++;
+    if (!(count_ % 100)) {
+        std::wstringstream str;
+        str << "Frames received: " << count_ << std::endl;
+        OutputDebugString(str.str().c_str());
+    }
     auto newSize = false;
 
     {
@@ -83,7 +90,9 @@ void SimpleCapture::OnFrameArrived(
 
     if (newSize)
     {
-        std::cout << "New frame size: " << lastSize_.Width << " x " << lastSize_.Height << std::endl;
+        std::wstringstream str;
+        str << "New frame size: " << lastSize_.Width << " x " << lastSize_.Height << std::endl;
+        OutputDebugString(str.str().c_str());
         framePool_.Recreate(
             device_,
             winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized,

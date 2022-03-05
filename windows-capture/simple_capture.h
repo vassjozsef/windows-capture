@@ -45,4 +45,5 @@ private:
 
     std::atomic<bool> closed_ = false;
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;
+    size_t count_{ 0 };
 };

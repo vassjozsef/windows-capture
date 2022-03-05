@@ -1,5 +1,5 @@
-#include <iostream>
 #include <memory>
+#include <sstream>
 
 #include <d3d11.h>
 #include <DispatcherQueue.h>
@@ -28,57 +28,98 @@ winrt::Windows::System::DispatcherQueueController CreateDispatcherQueueControlle
     return controller;
 }
 
-void Initialized() {
-    auto windows = EnumerateWindows();
+// really ugly global variable
+std::unique_ptr<SimpleCapture> capture{ nullptr };
 
-    size_t index{ 0 };
-    for (const auto& window : windows) {
-        auto title = window.title();
-        std::string t(title.begin(), title.end());
-        std::cout << "Window " << index++ << ": " << t << std::endl;
+LRESULT CALLBACK WndProc(
+    HWND   hwnd,
+    UINT   msg,
+    WPARAM wParam,
+    LPARAM lParam)
+{
+    switch (msg)
+    {
+    case WM_DESTROY:
+        capture.reset();
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+        break;
     }
 
-    winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device{ nullptr };
-    std::unique_ptr<SimpleCapture> capture_{ nullptr };
-
-    auto d3dDevice = CreateD3DDevice();
-    auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
-    device = CreateDirect3DDevice(dxgiDevice.get());
-
-    std::cout << "Enter selection: ";
-    size_t selectedWindow;
-    std::cin >> selectedWindow;
-
-    if (selectedWindow < windows.size()) {
-        auto title = windows[selectedWindow].title();
-        std::string t(title.begin(), title.end());
-        std::cout << "Selected window: " << t << std::endl;
-
-        auto hwnd = windows[selectedWindow].hwnd();
-        auto item = CreateCaptureItemForWindow(hwnd);
-        auto capture = std::make_unique<SimpleCapture>(device, item);
-
-        capture->StartCapture();
-
-        getchar();
-        getchar();
-    }
+    return 0;
 }
 
-int main()
+int CALLBACK WinMain(
+    HINSTANCE instance,
+    HINSTANCE previousInstance,
+    LPSTR     cmdLine,
+    int       cmdShow)
 {
     // Init COM
     winrt::init_apartment(winrt::apartment_type::single_threaded);
+
+    // Create the window
+    WNDCLASSEX wcex = {};
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = instance;
+    wcex.hIcon = LoadIcon(instance, MAKEINTRESOURCE(IDI_APPLICATION));
+    wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = NULL;
+    wcex.lpszClassName = L"ScreenCaptureforHWND";
+    wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_APPLICATION));
+    WINRT_VERIFY(RegisterClassEx(&wcex));
+
+    HWND hwnd = CreateWindow(
+        L"ScreenCaptureforHWND",
+        L"ScreenCaptureforHWND",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        800,
+        600,
+        NULL,
+        NULL,
+        instance,
+        NULL);
+    WINRT_VERIFY(hwnd);
+
+    ShowWindow(hwnd, cmdShow);
+    UpdateWindow(hwnd);
 
     // Create a DispatcherQueue for our thread
     auto controller = CreateDispatcherQueueController();
     // Enqueue our capture work on the dispatcher
     auto queue = controller.DispatcherQueue();
-    auto success = queue.TryEnqueue([=]() -> void
-    {
-        Initialized();
-    });
-    WINRT_VERIFY(success);
+
+    auto windows = EnumerateWindows();
+
+    for (const auto& window : windows) {
+        auto title = window.title();
+        std::wstringstream str;
+        str << "Window " << ": " << title << std::endl;
+        OutputDebugString(str.str().c_str());
+    }
+
+    auto d3dDevice = CreateD3DDevice();
+    auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
+    auto device = CreateDirect3DDevice(dxgiDevice.get());
+
+    size_t windowIndex = 0;
+    std::wstringstream str;
+    str << "Capturing window " << ": " << windows[windowIndex].title() << std::endl;
+    OutputDebugString(str.str().c_str());
+    auto capturedHwnd = windows[windowIndex].hwnd();
+    auto item = CreateCaptureItemForWindow(capturedHwnd);
+    capture = std::make_unique<SimpleCapture>(device, item);
+
+    capture->StartCapture();
 
     // Message pump
     MSG msg;
