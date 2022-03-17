@@ -41,7 +41,6 @@ private:
     winrt::Windows::Graphics::SizeInt32 lastSize_;
 
     winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice device_{ nullptr };
-    winrt::com_ptr<ID3D11DeviceContext> d3dContext_{ nullptr };
 
     std::atomic<bool> closed_ = false;
     winrt::Windows::Graphics::Capture::Direct3D11CaptureFramePool::FrameArrived_revoker frameArrived_;

@@ -16,9 +16,6 @@ SimpleCapture::SimpleCapture(
     device_ = device;
 
     // Set up 
-    auto d3dDevice = GetDXGIInterfaceFromObject<ID3D11Device>(device_);
-    d3dDevice->GetImmediateContext(d3dContext_.put());
-
     auto size = item_.Size();
     std::wstringstream str;
     str << "Capture created with frame size: " << size.Width << " x " << size.Height << std::endl;
