@@ -108,8 +108,15 @@ int CALLBACK WinMain(
     }
 
     auto d3dDevice = CreateD3DDevice();
+#if 1
+    IDXGIDevice* dxgiDevice = NULL;
+    auto uuid = __uuidof(IDXGIDevice);
+    auto hr = d3dDevice->QueryInterface(uuid, (void **)&dxgiDevice);
+    auto device = CreateDirect3DDevice(dxgiDevice);
+#else
     auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
     auto device = CreateDirect3DDevice(dxgiDevice.get());
+#endif
 
     size_t windowIndex = 0;
     std::wstringstream str;
