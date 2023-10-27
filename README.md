@@ -5,9 +5,7 @@ Sample app for `Windows.Grapics.Capture`.
 
 https://docs.microsoft.com/en-us/windows/uwp/audio-video-camera/screen-capture
 
-Visual Studio 2017 version 15.9.44 with Universal Windows Platfrm Development.
-
-Make sure that Windows SDK 10.0.18346.0 is installed (https://developer.microsoft.com/en-us/windows/downloads/sdk-archive/).
+Visual Studio 2019 version 16.11.31 with Desktop development with C++ and Universal Windows Platform development workloads. Install Windows 10 SDK 10.0.18362.0. 
 
 Based on https://github.com/microsoft/Windows.UI.Composition-Win32-Samples/tree/master/cpp/ScreenCaptureforHWND (also used by OBS).
 
