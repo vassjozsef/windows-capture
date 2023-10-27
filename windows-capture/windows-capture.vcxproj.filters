@@ -23,6 +23,9 @@
     <ClCompile Include="d3d_helpers.cpp">
       <Filter>Files</Filter>
     </ClCompile>
+    <ClCompile Include="screen_enumeration.cpp">
+      <Filter>Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window_enumeration.h">
@@ -38,6 +41,9 @@
       <Filter>Files</Filter>
     </ClInclude>
     <ClInclude Include="capture_interop.h">
+      <Filter>Files</Filter>
+    </ClInclude>
+    <ClInclude Include="screen_enumeration.h">
       <Filter>Files</Filter>
     </ClInclude>
   </ItemGroup>

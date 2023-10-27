@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="d3d_helpers.cpp" />
+    <ClCompile Include="screen_enumeration.cpp" />
     <ClCompile Include="simple_capture.cpp" />
     <ClCompile Include="windows-capture.cpp" />
     <ClCompile Include="window_enumeration.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="capture_interop.h" />
     <ClInclude Include="d3d_helpers.h" />
     <ClInclude Include="direct3d11_interop.h" />
+    <ClInclude Include="screen_enumeration.h" />
     <ClInclude Include="simple_capture.h" />
     <ClInclude Include="window_enumeration.h" />
   </ItemGroup>

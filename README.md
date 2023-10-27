@@ -1,7 +1,7 @@
 Windows Capture
 ===============
 
-Sample app for `Windows.Grapics.Capture`.
+Sample app for `Windows.Graphics.Capture`.
 
 https://docs.microsoft.com/en-us/windows/uwp/audio-video-camera/screen-capture
 

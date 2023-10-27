@@ -8,6 +8,7 @@
 #include "capture_interop.h"
 #include "d3d_helpers.h"
 #include "direct3d11_interop.h"
+#include "screen_enumeration.h"
 #include "simple_capture.h"
 #include "window_enumeration.h"
 
@@ -183,13 +184,20 @@ int CALLBACK WinMain(
     auto queue = controller.DispatcherQueue();
 
     auto windows = EnumerateWindows();
-
+    std::wstringstream str;
+    str << "Windows " << ": " << windows.size() << std::endl;
+    OutputDebugString(str.str().c_str());
     for (const auto& window : windows) {
         auto title = window.title();
         std::wstringstream str;
         str << "Window " << ": " << title << std::endl;
         OutputDebugString(str.str().c_str());
     }
+
+    auto screens = EnumerateScreens();
+    str.str(std::wstring());
+    str << "Screens " << ": " << screens.size() << std::endl;
+    OutputDebugString(str.str().c_str());
 
     auto d3dDevice = CreateD3DDevice();
 #if 1
@@ -202,20 +210,30 @@ int CALLBACK WinMain(
     auto device = CreateDirect3DDevice(dxgiDevice.get());
 #endif
 
+#if 0
     // window selection
     size_t windowIndex = 0;
     for (int i = 0; i < windows.size(); i++) {
-        if (windows[i].title().find(L"League") != std::string::npos) {
+        if (windows[i].title().find(L"Cmder") != std::string::npos) {
             windowIndex = i;
             break;
         }
     }
 
-    std::wstringstream str;
+    str.str(std::wstring());
     str << "Capturing window " << ": " << windows[windowIndex].title() << std::endl;
     OutputDebugString(str.str().c_str());
     auto capturedHwnd = windows[windowIndex].hwnd();
     auto item = CreateCaptureItemForWindow(capturedHwnd);
+#else
+    // screen selection
+    size_t screenIndex = 0;
+    str.str(std::wstring());
+    str << "Capturing screen with index " << screenIndex << std::endl;
+    OutputDebugString(str.str().c_str());
+    auto capturedHmonitor = screens[screenIndex].hmonitor();
+    auto item = CreateCaptureItemForMonitor(capturedHmonitor);
+#endif
     capture = std::make_unique<SimpleCapture>(device, item);
 
     capture->StartCapture();

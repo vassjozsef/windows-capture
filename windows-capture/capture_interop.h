@@ -14,3 +14,14 @@ inline winrt::Windows::Graphics::Capture::GraphicsCaptureItem CreateCaptureItemF
     OutputDebugString(item.DisplayName().c_str());
     return item;
 }
+
+inline winrt::Windows::Graphics::Capture::GraphicsCaptureItem CreateCaptureItemForMonitor(HMONITOR hmonitor)
+{
+    auto activation_factory = winrt::get_activation_factory<winrt::Windows::Graphics::Capture::GraphicsCaptureItem>();
+    auto interop_factory = activation_factory.as<IGraphicsCaptureItemInterop>();
+    winrt::Windows::Graphics::Capture::GraphicsCaptureItem item = { nullptr };
+    interop_factory->CreateForMonitor(hmonitor, winrt::guid_of<ABI::Windows::Graphics::Capture::IGraphicsCaptureItem>(), reinterpret_cast<void**>(winrt::put_abi(item)));
+    assert(item);
+    OutputDebugString(item.DisplayName().c_str());
+    return item;
+}
