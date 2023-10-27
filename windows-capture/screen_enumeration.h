@@ -16,8 +16,6 @@ public:
 
 private:
     HMONITOR hmonitor_;
-    std::wstring title_;
-    std::wstring className_;
 };
 
 const std::vector<Screen> EnumerateScreens();
